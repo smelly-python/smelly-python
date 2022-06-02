@@ -1,2 +1,3 @@
-# smelly-python
+# Smelly Python
+
 A Python Code Smell Reporting Tool
