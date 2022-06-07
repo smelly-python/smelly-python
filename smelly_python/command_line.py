@@ -19,7 +19,6 @@ def main():
         dict_data = json.load(file)
         print(dict_data)
         data = Code_Smell.convert_dict(dict_data)
-        print(data)
 
 
 if __name__ == '__main__':
