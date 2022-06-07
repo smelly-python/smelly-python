@@ -3,6 +3,7 @@ The command line module provides the main function of the application.
 """
 import sys
 import json
+from smelly_python.code_smell import Code_Smell
 
 
 def main():
@@ -17,7 +18,11 @@ def main():
     with open(sys.argv[1], 'r', encoding='utf-8') as file:
         dict_data = json.load(file)
         print(dict_data)
+        data = Code_Smell.convert_dict(dict_data)
+        print(data)
 
 
 if __name__ == '__main__':
     main()
+
+    
