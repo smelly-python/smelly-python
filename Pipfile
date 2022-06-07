@@ -6,6 +6,9 @@ name = "pypi"
 [requires]
 python_version = "3.9"
 
+[packages]
+dominate = "~=2.6.0"
+
 [dev-packages]
 pylint = "~=2.14.1"
 

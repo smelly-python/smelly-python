@@ -4,6 +4,7 @@ The command line module provides the main function of the application.
 import sys
 import json
 from smelly_python.code_smell import Code_Smell
+from .generator.webpage_generator import generate_webpage
 
 
 def main():
@@ -15,10 +16,11 @@ def main():
     if not (len(sys.argv) == 2):
         print('Insufficient amount parameters provided')
         sys.exit(1)
-    with open(sys.argv[1], 'r', encoding='utf-8') as file:
+    with open(sys.argv[1]) as file: 
         dict_data = json.load(file)
         data = Code_Smell.convert_dict(dict_data)
         print(data)
+    print(generate_webpage())
 
 
 if __name__ == '__main__':
