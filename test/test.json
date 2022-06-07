@@ -1,0 +1,93 @@
+[
+    {
+        "type": "refactor",
+        "module": "src.create_model",
+        "obj": "read_data",
+        "line": 20,
+        "column": 4,
+        "endLine": 20,
+        "endColumn": 42,
+        "path": "src/create_model.py",
+        "symbol": "column-selection-pandas",
+        "message": "There is no column selection after the dataframe is imported.",
+        "message-id": "R5504"
+    },
+    {
+        "type": "refactor",
+        "module": "src.create_model",
+        "obj": "read_data",
+        "line": 20,
+        "column": 11,
+        "endLine": 20,
+        "endColumn": 42,
+        "path": "src/create_model.py",
+        "symbol": "datatype-pandas",
+        "message": "Datatype is not set when a dataframe is imported from data.",
+        "message-id": "R5503"
+    },
+    {
+        "type": "refactor",
+        "module": "src.data.make_dataset",
+        "obj": "read_data",
+        "line": 12,
+        "column": 4,
+        "endLine": 12,
+        "endColumn": 42,
+        "path": "src/data/make_dataset.py",
+        "symbol": "column-selection-pandas",
+        "message": "There is no column selection after the dataframe is imported.",
+        "message-id": "R5504"
+    },
+    {
+        "type": "refactor",
+        "module": "src.data.make_dataset",
+        "obj": "read_data",
+        "line": 12,
+        "column": 11,
+        "endLine": 12,
+        "endColumn": 42,
+        "path": "src/data/make_dataset.py",
+        "symbol": "datatype-pandas",
+        "message": "Datatype is not set when a dataframe is imported from data.",
+        "message-id": "R5503"
+    },
+    {
+        "type": "refactor",
+        "module": "src.data.make_dataset",
+        "obj": "make_dataset",
+        "line": 27,
+        "column": 4,
+        "endLine": 27,
+        "endColumn": 49,
+        "path": "src/data/make_dataset.py",
+        "symbol": "column-selection-pandas",
+        "message": "There is no column selection after the dataframe is imported.",
+        "message-id": "R5504"
+    },
+    {
+        "type": "refactor",
+        "module": "src.data.make_dataset",
+        "obj": "make_dataset",
+        "line": 27,
+        "column": 11,
+        "endLine": 27,
+        "endColumn": 49,
+        "path": "src/data/make_dataset.py",
+        "symbol": "datatype-pandas",
+        "message": "Datatype is not set when a dataframe is imported from data.",
+        "message-id": "R5503"
+    },
+    {
+        "type": "error",
+        "module": "src.data.download_files",
+        "obj": "",
+        "line": 5,
+        "column": 0,
+        "endLine": 5,
+        "endColumn": 12,
+        "path": "src/data/download_files.py",
+        "symbol": "import-error",
+        "message": "Unable to import 'gdown'",
+        "message-id": "E0401"
+    }
+]
