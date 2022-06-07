@@ -7,7 +7,7 @@ name = "pypi"
 python_version = "3.9"
 
 [dev-packages]
-pylint = "*"
+pylint = "~=2.14.1"
 
 [scripts]
 pylint="pylint smelly_python"
