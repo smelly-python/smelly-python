@@ -5,7 +5,8 @@ style errors.
 from os import link, path, getcwd
 
 from dominate import document
-from dominate.tags import h1, style, div, tbody, table, tr, td, thead, th, a, img, footer, script, pre, code, link, h4
+from dominate.svg import image
+from dominate.tags import h1, style, div, tbody, table, tr, td, thead, th, a, footer, script, pre, code, link, h4
 from dominate.util import raw
 from smelly_python.code_smell import CodeSmell
 
@@ -29,7 +30,6 @@ def generate_webpage(code_smells):
             link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/line-highlight/prism-line-highlight.min.css')
             link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css')
 
-
     code_smell_by_file = CodeSmell.group_by_file(code_smells)
     with doc:
         h1('Smelly Python')
@@ -51,9 +51,9 @@ def generate_webpage(code_smells):
                             row = tr(_class='center-text')
                             table_data = td()
                             if smell.type == 'error':
-                                table_data.add(img(src=path.join(path.dirname(__file__), '../resources/error.svg')))
+                                table_data.add(image(src=path.join(path.dirname(path.dirname(__file__)), 'resources', 'error.svg'), alt='error'))
                             else:
-                                table_data.add(img(src=path.join(path.dirname(__file__), '../resources/warning.svg')))
+                                table_data.add(image(src=path.join(path.dirname(path.dirname(__file__)), 'resources', 'warning.svg'), alt='warning'))
                                 
                             row += table_data
                             row += td(smell.symbol)
