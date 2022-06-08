@@ -15,10 +15,10 @@ class Code_Smell(object):
         self.message_id = data['message-id']
 
     def __repr__(self) -> str:
-        return f"{self.type} in {self.module} on line {self.line} at {self.column} with reason: {self.message}"
+        return f'{self.type} in {self.module} on line {self.line} at {self.column} with reason: {self.message}'
 
     def __str__(self) -> str:
-        return f"{self.type} in {self.module} on line {self.line} at {self.column} with reason: {self.message}"
+        return f'{self.type} in {self.module} on line {self.line} at {self.column} with reason: {self.message}'
 
     @staticmethod
     def convert_dict(json_content) -> Array:
