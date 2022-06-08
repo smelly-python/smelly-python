@@ -1,7 +1,7 @@
 from multiprocessing.dummy import Array
 
 
-class Code_Smell(object): 
+class CodeSmell(object): 
     def __init__(self, data):
         self.type = data['type']
         self.module = data['module']
@@ -23,6 +23,6 @@ class Code_Smell(object):
     @staticmethod
     def convert_dict(json_content) -> Array:
         ret = []
-        for i in json_content:
-            ret.append(Code_Smell(i))
+        for code_smell in json_content:
+            ret.append(CodeSmell(code_smell))
         return ret
