@@ -3,6 +3,7 @@ The code smell modules provides the CodeSmell class
 and the Location class, which is used by the CodeSmell.
 """
 from multiprocessing.dummy import Array
+from itertools import groupby
 
 
 class Location:
@@ -16,7 +17,7 @@ class Location:
         self.python_object = data['obj']
         self.line = data['line']
         self.column = data['column']
-        self.end_line = data['end_line']
+        self.end_line = data['endLine']
         self.path = data['path']
 
     def __repr__(self) -> str:
@@ -53,4 +54,16 @@ class CodeSmell:
         ret = []
         for i in json_content:
             ret.append(CodeSmell(i))
+        return ret
+
+    @staticmethod
+    def group_by_file(code_smells):
+        """
+        Takes a list of code smells and groups them by the file. 
+        """
+        def key_func(k):
+            return k.location.path
+        ret = []
+        for key, value in groupby(code_smells, key_func):
+            ret.append(list(value))
         return ret

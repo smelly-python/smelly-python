@@ -16,11 +16,13 @@ def main():
     if len(sys.argv) != 2:
         print('Insufficient amount parameters provided')
         sys.exit(1)
+    code_smells = []
     with open(sys.argv[1], 'r', encoding='utf-8') as file:
         dict_data = json.load(file)
-        data = CodeSmell.convert_dict(dict_data)
-        print(data)
-    print(generate_webpage())
+        code_smells = CodeSmell.convert_dict(dict_data)
+        print(code_smells)
+    with open('output.html', 'w') as f:
+        f.write(generate_webpage(code_smells))
 
 
 if __name__ == '__main__':
