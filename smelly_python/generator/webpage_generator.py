@@ -5,7 +5,7 @@ style errors.
 from os import link, path, getcwd
 
 from dominate import document
-from dominate.tags import h1, style, div, tbody, table, tr, td, thead, th, a, img, footer, script, pre, code, link
+from dominate.tags import h1, style, div, tbody, table, tr, td, thead, th, a, img, footer, script, pre, code, link, h4
 from dominate.util import raw
 from smelly_python.code_smell import CodeSmell
 
@@ -61,12 +61,13 @@ def generate_webpage(code_smells):
                             row += td(f'{smell.location.line}:{smell.location.column}')
 
         for file in code_smell_by_file:
-            with div(_class='line-numbers'):
+            with div(_class='line-numbers', id=file[0].location.path):
+                h4(file[0].location.path)
                 data_line = ""
                 # file = code_smell_by_file[0]
                 for smell in file:
                     loc = smell.location
-                    if loc.line == loc.end_line:
+                    if loc.line == loc.end_line and loc.end_line != None:
                         data_line += f',{loc.line}'
                     else: 
                         data_line += f', {loc.line}-{loc.end_line}'
@@ -81,5 +82,9 @@ def generate_webpage(code_smells):
             script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js')
             script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/line-highlight/prism-line-highlight.min.js')
             script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js')
+
+            with open(path.join(path.dirname(__file__), '../resources/script.js'), 'r', encoding='utf-8')\
+            as file:
+                script(raw(file.read()))
 
     return str(doc)
