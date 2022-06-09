@@ -4,13 +4,28 @@ function setSmells(smells) {
     codeSmells = smells;
 }
 
+function addToDictionary(dict, key, value) {
+    if (!(key in dict)) {
+        dict[key] = [];
+    }
+    dict[key].push(value);
+}
+
 window.onload = async function () {
+    // Add line numbers
     for (const block of document.getElementsByClassName('hljs')) {
         hljs.lineNumbersBlock(block);
     }
 
     // TODO: handle multiple smells on one line
-    const smellsPerLine = Object.assign({}, ...codeSmells.map(smell => ({[smell.location.line]: smell})));
+    const smellsPerLine = {};
+    for (smell of codeSmells) {
+        var currentLine = smell.location.line;
+        do {
+            addToDictionary(smellsPerLine, currentLine, smell);
+            currentLine += 1;
+        } while (currentLine <= smell.location.end_line && smell.location.end_line !== null);
+    }
 
     var trs;
     do {
@@ -23,8 +38,7 @@ window.onload = async function () {
         const line = index + 1;
         if (line in smellsPerLine) {
             // TODO: handle multiple smells on one line
-            // TODO: handle smells on multiple lines
-            const smell = smellsPerLine[line];
+            const smell = smellsPerLine[line][0];
             tr.classList.add(smell.type);
             tr.classList.add('code-smell');
 

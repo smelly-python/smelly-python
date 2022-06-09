@@ -96,7 +96,7 @@
         "obj": "generate_webpage",
         "line": 105,
         "column": 32,
-        "endLine": 105,
+        "endLine": 107,
         "endColumn": 43,
         "path": "smelly_python/generator/webpage_generator.py",
         "symbol": "no-value-for-parameter",
