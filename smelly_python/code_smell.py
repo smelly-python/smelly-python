@@ -79,4 +79,4 @@ class CodeSmell:
         """
         def key_func(k):
             return k.location.path
-        return [[value] for _, value in groupby(code_smells, key_func)]
+        return [list(value) for _, value in groupby(code_smells, key_func)]
