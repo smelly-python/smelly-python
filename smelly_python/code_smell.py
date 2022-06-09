@@ -5,6 +5,7 @@ and the Location class, which is used by the CodeSmell.
 from multiprocessing.dummy import Array
 from enum import Enum
 from itertools import groupby
+import json
 
 
 class Location:
@@ -84,6 +85,13 @@ class CodeSmell:
         :return: a readable string
         """
         return self.symbol.replace('-', ' ')
+
+    def jsonify(self) -> str:
+        """
+        Creates a JSON object containing the CodeSmell.
+        :return: a string with the JSON object
+        """
+        return json.dumps(self, default=lambda o: o.__dict__)
 
 
 class Report:

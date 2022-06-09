@@ -16,45 +16,25 @@ h1 {
     text-align: center;
 }
 
-.line-highlight {
-    background-image: linear-gradient(to right, rgba(249, 60, 31, 0.2) 70%, rgba(255, 122, 102, 0)) !important;
-    cursor: pointer !important;
+/* TODO: refactor cursor to one css class */
+.error {
+    background-color: rgba(249, 31, 31, 0.4);
+    cursor: pointer;
 }
 
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black;
+.warning {
+    background-color: rgba(249, 147, 31, 0.4);
+    cursor: pointer;
 }
 
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  bottom: 150%;
-  left: 50%;
-  margin-left: -60px;
+.refactor {
+    background-color: rgba(249, 220, 31, 0.3);
+    cursor: pointer;
 }
 
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: black transparent transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
+.convention{
+    background-color: rgba(31, 151, 249, 0.15);
+    cursor: pointer;
 }
 
 /* Highlight js numbers */

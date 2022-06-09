@@ -14,6 +14,8 @@ from dominate.tags import \
     a, footer, script, pre, code, link, h4
 from dominate.util import raw
 
+from smelly_python.code_smell import CodeSmell
+
 
 def _create_output(output_dir):
     if path.exists(output_dir):
@@ -21,7 +23,7 @@ def _create_output(output_dir):
     os.mkdir(output_dir)
 
 
-def _create_code_page(file):
+def _create_code_page(file: [CodeSmell]):
     doc = document(title='Smelly Python code smell report')
 
     with doc.head:
@@ -51,7 +53,9 @@ def _create_code_page(file):
         with footer():
             script(src='highlight.min.js')
             script(src='highlightjs-line-numbers.min.js')
-            script('hljs.highlightAll();hljs.initLineNumbersOnLoad();')
+            script('hljs.highlightAll();')
+            script(src='script.js')
+            script(raw(f'setSmells([{",".join(smell.jsonify() for smell in file)}])'))
 
     return doc
 
@@ -120,7 +124,6 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
 
         with footer():
             raw('<strong>Icons by svgrepo.com</strong>')
-            script(src='script.js')
 
     for file in code_smell_by_file:
         file_page = _create_code_page(file)
