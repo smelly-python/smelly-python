@@ -7,6 +7,7 @@ import subprocess
 import sys
 import json
 import click
+import re
 from pathlib import Path
 from os import path, getcwd
 
@@ -28,6 +29,7 @@ def main(file):
         sys.exit(1)
     _setup_dirs()
     content = ""
+    grade = ""
     print('Running pylint...')
     print(['pylint', file, f'--output-format=json:{_get_reports("report.json")},text:{_get_reports("grade.txt")}', '--exit-zero'])
     try:
@@ -40,9 +42,11 @@ def main(file):
         sys.exit(1)
     with open(_get_reports('report.json'), 'r', encoding='utf-8') as input_file:
         content = json.load(input_file)
+    with open(_get_reports('grade.txt'), 'r', encoding='utf-8') as input_file:
+        grade = re.search("Your code has been rated at (\d+\.?\d*)", input_file.read()).group(1)
 
     code_smells = CodeSmell.convert_dict(content)
-    generate_webpage(code_smells)
+    generate_webpage(code_smells, grade=grade)
 
 def _setup_dirs():
     Path('report/smelly_python').mkdir(parents=True, exist_ok=True)
