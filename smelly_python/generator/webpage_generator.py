@@ -111,7 +111,8 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
                         row += td(smell.symbol)
                         row += td(smell.message)
                         line_num = smell.location.line
-                        code_smell_link = f'{html_path}#line-{str(line_num - 3 if line_num > 3 else line_num)}'
+                        code_smell_link = f'{html_path}#line-' \
+                                          f'{str(line_num - 3 if line_num > 3 else line_num)}'
                         row += td(a(f'{smell.location.line}:{smell.location.column}',
                                     href=code_smell_link))
 
