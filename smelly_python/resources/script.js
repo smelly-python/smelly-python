@@ -1,7 +1,7 @@
-var code_smells;
+var codeSmells;
 
 function setSmells(smells) {
-    code_smells = smells;
+    codeSmells = smells;
 }
 
 window.onload = async function () {
@@ -10,7 +10,7 @@ window.onload = async function () {
     }
 
     // TODO: handle multiple smells on one line
-    const smells_per_line = Object.assign({}, ...code_smells.map(smell => ({[smell.location.line]: smell})));
+    const smellsPerLine = Object.assign({}, ...codeSmells.map(smell => ({[smell.location.line]: smell})));
 
     var trs;
     do {
@@ -21,9 +21,18 @@ window.onload = async function () {
     } while (trs.length === 0);
     for (const [index, tr] of trs.entries()) {
         const line = index + 1;
-        if (line in smells_per_line) {
+        if (line in smellsPerLine) {
             // TODO: handle multiple smells on one line
-            tr.className += smells_per_line[line].type
+            const smell = smellsPerLine[line];
+            tr.classList.add(smell.type);
+            tr.classList.add('code-smell');
+
+            const message = document.createElement('span');
+            message.className = 'code-smell-message';
+            message.innerText = smell.message;
+            tr.appendChild(message);
+            message.style.setProperty('margin-left', -message.clientWidth / 2 + 'px');
+            console.log(message)
         }
         tr.setAttribute('id', `line-${line}`);
     }

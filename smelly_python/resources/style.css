@@ -16,25 +16,55 @@ h1 {
     text-align: center;
 }
 
-/* TODO: refactor cursor to one css class */
 .error {
     background-color: rgba(249, 31, 31, 0.4);
-    cursor: pointer;
 }
 
 .warning {
     background-color: rgba(249, 147, 31, 0.4);
-    cursor: pointer;
 }
 
 .refactor {
     background-color: rgba(249, 220, 31, 0.3);
-    cursor: pointer;
 }
 
 .convention{
     background-color: rgba(31, 151, 249, 0.15);
+}
+
+.code-smell {
     cursor: pointer;
+    position: relative;
+}
+
+.code-smell .code-smell-message {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.code-smell .code-smell-message::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.code-smell:hover .code-smell-message {
+  visibility: visible;
 }
 
 /* Highlight js numbers */
