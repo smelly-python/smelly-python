@@ -3,13 +3,15 @@ The webpage generator module provides the method that generates the webpage give
 style errors.
 """
 import os
-from os import link, path, getcwd
 import shutil
 from pathlib import Path
+from os import path, getcwd
 
 from dominate import document
 from dominate.svg import image
-from dominate.tags import h1, div, tbody, table, tr, td, thead, th, a, footer, script, pre, code, link, h4
+from dominate.tags import \
+    h1, div, tbody, table, tr, td, thead, th, \
+    a, footer, script, pre, code, link, h4
 from dominate.util import raw
 from smelly_python.code_smell import CodeSmell
 
@@ -52,11 +54,12 @@ def _create_code_page(file):
 
         with footer():
             script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js')
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js')
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/line-highlight/'
-                       'prism-line-highlight.min.js')
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/line-numbers/'
-                       'prism-line-numbers.min.js')
+            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/'
+                       'autoloader/prism-autoloader.min.js')
+            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/'
+                       'line-highlight/prism-line-highlight.min.js')
+            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/'
+                       'line-numbers/prism-line-numbers.min.js')
             script(src='script.js')
 
     return doc
@@ -107,7 +110,8 @@ def generate_webpage(code_smells, output_path='output'):
                             row += td(smell.symbol)
                             row += td(smell.message)
                             code_smell_link = f'{html_path}#code-block.{smell.location.line}'
-                            row += td(a(f'{smell.location.line}:{smell.location.column}', href=code_smell_link))
+                            row += td(a(f'{smell.location.line}:{smell.location.column}',
+                                        href=code_smell_link))
 
         with footer():
             raw('<strong>Icons by svgrepo.com</strong>')
@@ -115,7 +119,8 @@ def generate_webpage(code_smells, output_path='output'):
 
     for file in code_smell_by_file:
         file_page = _create_code_page(file)
-        html_path = Path(path.join(output_path, path.basename(file[0].location.path))).with_suffix('.html')
+        html_path = Path(path.join(output_path, path.basename(file[0].location.path)))\
+            .with_suffix('.html')
         with open(html_path, 'w', encoding='utf-8') as html_file:
             html_file.write(str(file_page))
 
