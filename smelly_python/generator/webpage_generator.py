@@ -23,7 +23,7 @@ def _create_output(output_dir):
     os.mkdir(output_dir)
 
 
-def _create_code_page(file: [CodeSmell]):
+def _generate_code_document(file: [CodeSmell]):
     doc = document(title='Smelly Python code smell report')
 
     with doc.head:
@@ -61,6 +61,18 @@ def get_html_path(file):
     return Path(file).with_suffix('.html')
 
 
+def _create_code_page(file, output_path):
+    file_page = _generate_code_document(file)
+
+    directory = path.dirname(path.join(output_path, file[0].location.path))
+    os.makedirs(directory, exist_ok=True)
+
+    html_path = Path(path.join(output_path, file[0].location.path)) \
+        .with_suffix('.html')
+    with open(html_path, 'w', encoding='utf-8') as html_file:
+        html_file.write(str(file_page))
+
+
 def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
     """
     Generates the webpage showing the errors as a string.
@@ -93,8 +105,7 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
                     row += th('Location')
                 with tbody():
                     for smell in report.code_smells:
-                        file = smell.location.path
-                        html_path = html_paths[file]
+                        html_path = html_paths[smell.location.path]
 
                         row = tr(_class='center-text')
                         table_data = td()
@@ -107,7 +118,7 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
                             table_data.add(image(src='info.svg', alt='info'))
 
                         row += table_data
-                        row += td(a(file, href=html_path))
+                        row += td(a(smell.location.path, href=html_path))
                         row += td(smell.symbol)
                         row += td(smell.message)
                         line_num = smell.location.line
@@ -120,15 +131,7 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
             raw('<strong>Icons by svgrepo.com</strong>')
 
     for file in code_smell_by_file:
-        file_page = _create_code_page(file)
-
-        directory = path.dirname(path.join(output_path, file[0].location.path))
-        os.makedirs(directory, exist_ok=True)
-
-        html_path = Path(path.join(output_path, file[0].location.path))\
-            .with_suffix('.html')
-        with open(html_path, 'w', encoding='utf-8') as html_file:
-            html_file.write(str(file_page))
+        _create_code_page(file, output_path)
 
     # Copy static resources
     for file in Path(path.join(path.dirname(path.dirname(__file__)), 'resources')).glob('*'):
