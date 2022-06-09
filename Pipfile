@@ -8,6 +8,7 @@ python_version = "3.9"
 
 [packages]
 dominate = "~=2.6.0"
+click = "8.1.3"
 
 [dev-packages]
 pylint = "~=2.14.1"
@@ -15,5 +16,3 @@ pylint = "~=2.14.1"
 [scripts]
 pylint="pylint smelly_python"
 
-[packages]
-click = "*"
