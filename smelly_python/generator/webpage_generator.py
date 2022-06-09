@@ -65,7 +65,7 @@ def _create_code_page(file):
     return doc
 
 
-def generate_webpage(code_smells, output_path='report/smelly_python', grade=None):
+def generate_webpage(report, output_path='report/smelly_python'):
     """
     Generates the webpage showing the errors as a string.
     :return: the html webpage as a string
@@ -77,10 +77,10 @@ def generate_webpage(code_smells, output_path='report/smelly_python', grade=None
     with doc.head:
         link(rel='stylesheet', href='style.css')
 
-    code_smell_by_file = CodeSmell.group_by_file(code_smells)
+    code_smell_by_file = CodeSmell.group_by_file(report.code_smells)
     with doc:
         h1('Smelly Python')
-        h4(f'Your project scored {grade}/10')
+        h4(f'Your project scored {report.grade}/10')
         with div():
             with table():
                 with thead():
