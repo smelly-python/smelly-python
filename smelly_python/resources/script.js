@@ -45,7 +45,7 @@ window.onload = async function () {
 
             const message = document.createElement('span');
             message.className = 'code-smell-message';
-            message.innerText = smells.map(smell => smell.message).join('\n');
+            message.innerText = smells.map(smell => `${smell.message_id}: ${smell.message}`).join('\n');
             tr.appendChild(message);
             message.style.setProperty('margin-left', -message.clientWidth / 2 + 'px');
         }
