@@ -1,0 +1,3 @@
+include README.md
+include smelly_python/resources/*
+include setup.cfg
