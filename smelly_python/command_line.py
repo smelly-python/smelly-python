@@ -26,8 +26,6 @@ def main(directory):
         print("Please provide the --dir parameter")
         sys.exit(1)
     _setup_dirs()
-    content = ""
-    grade = ""
     print('Running pylint...')
     result = None
     try:
@@ -36,7 +34,7 @@ def main(directory):
                                 capture_output=True, text=True, check=True)
     except subprocess.CalledProcessError:
         print(
-            f'Whoops we could not run pylint for the following file: {directory}')
+            f'Whoops we could not run pylint for the following directory: {directory}')
         print(result.stderr)
         sys.exit(1)
     print('Finished running python, creating report...')
@@ -52,7 +50,7 @@ def main(directory):
 
 
 def _setup_dirs():
-    Path('report/smelly_python').mkdir(parents=True, exist_ok=True)
+    Path(path.join('report', 'smelly_python')).mkdir(parents=True, exist_ok=True)
 
 
 def _get_reports(file_name):

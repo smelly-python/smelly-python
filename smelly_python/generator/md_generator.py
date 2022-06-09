@@ -11,7 +11,7 @@ def get_block(string):
     :param: string the string to format
     :return: the string as an MD block
     """
-    return string + "\n\n"
+    return string + '\n\n'
 
 
 def get_link(label, url):

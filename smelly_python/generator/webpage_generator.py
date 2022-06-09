@@ -36,7 +36,9 @@ def _create_code_page(file):
     with doc:
         h1('Smelly Python')
         with div(_class='line-numbers', id=file[0].location.path):
-            h4(a('Home', href='./index.html'), f' > {file[0].location.path}')
+            # Count number of nested folders by counting /
+            link_to_home = '/'.join('..' for _ in range(file[0].location.path.count('/'))) + '/'
+            h4(a('Home', href=link_to_home), f' > {file[0].location.path}')
 
             data_line = ""
             for smell in file:
@@ -73,7 +75,7 @@ def get_html_path(file):
     return Path(file).with_suffix('.html')
 
 
-def generate_webpage(report, output_path='report/smelly_python'):
+def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
     """
     Generates the webpage showing the errors as a string.
     :return: the html webpage as a string
