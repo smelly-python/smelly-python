@@ -65,6 +65,10 @@ def _create_code_page(file):
     return doc
 
 
+def get_html_path(file):
+    return Path(file).with_suffix('.html')
+
+
 def generate_webpage(report, output_path='report/smelly_python'):
     """
     Generates the webpage showing the errors as a string.
@@ -78,6 +82,11 @@ def generate_webpage(report, output_path='report/smelly_python'):
         link(rel='stylesheet', href='style.css')
 
     code_smell_by_file = CodeSmell.group_by_file(report.code_smells)
+    html_paths = {
+        file: get_html_path(file, output_path)
+        for file in [file[0].location.path for file in code_smell_by_file]
+    }
+
     with doc:
         h1('Smelly Python')
         h4(f'Your project scored {report.grade}/10')
@@ -86,33 +95,32 @@ def generate_webpage(report, output_path='report/smelly_python'):
                 with thead():
                     row = tr()
                     row += th('Severity')
+                    row += th('File')
                     row += th('Code smell')
                     row += th('Message')
                     row += th('Location')
                 with tbody():
-                    for file in code_smell_by_file:
-                        full_file_path = path.join(getcwd(), file[0].location.path)
-                        html_path = Path(path.basename(full_file_path)).with_suffix('.html')
-                        with tr(style='font-weight:bold'):
-                            with td(colspan=4):
-                                a(file[0].location.path, href=html_path)
-                        for smell in sorted(file, key=lambda s: s.severity(), reverse=True):
-                            row = tr(_class='center-text')
-                            table_data = td()
-                            if smell.type == 'error':
-                                table_data.add(image(src='error.svg', alt='error'))
-                            elif smell.type == 'warning':
-                                table_data.add(image(src='warning.svg', alt='warning'))
-                            else:
-                                # Will be "refactor" or "convention"
-                                table_data.add(image(src='info.svg', alt='info'))
+                    for smell in report.code_smells:
+                        file = smell.location.path
+                        html_path = html_paths[file]
 
-                            row += table_data
-                            row += td(smell.symbol)
-                            row += td(smell.message)
-                            code_smell_link = f'{html_path}#code-block.{smell.location.line}'
-                            row += td(a(f'{smell.location.line}:{smell.location.column}',
-                                        href=code_smell_link))
+                        row = tr(_class='center-text')
+                        table_data = td()
+                        if smell.type == 'error':
+                            table_data.add(image(src='error.svg', alt='error'))
+                        elif smell.type == 'warning':
+                            table_data.add(image(src='warning.svg', alt='warning'))
+                        else:
+                            # Will be "refactor" or "convention"
+                            table_data.add(image(src='info.svg', alt='info'))
+
+                        row += table_data
+                        row += td(a(file, href=html_path))
+                        row += td(smell.symbol)
+                        row += td(smell.message)
+                        code_smell_link = f'{html_path}#code-block.{smell.location.line}'
+                        row += td(a(f'{smell.location.line}:{smell.location.column}',
+                                    href=code_smell_link))
 
         with footer():
             raw('<strong>Icons by svgrepo.com</strong>')
@@ -120,7 +128,11 @@ def generate_webpage(report, output_path='report/smelly_python'):
 
     for file in code_smell_by_file:
         file_page = _create_code_page(file)
-        html_path = Path(path.join(output_path, path.basename(file[0].location.path)))\
+
+        directory = path.dirname(path.join(output_path, file[0].location.path))
+        os.makedirs(directory, exist_ok=True)
+
+        html_path = Path(path.join(output_path, file[0].location.path))\
             .with_suffix('.html')
         with open(html_path, 'w', encoding='utf-8') as html_file:
             html_file.write(str(file_page))
