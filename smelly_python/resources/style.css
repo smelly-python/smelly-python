@@ -1,0 +1,23 @@
+html {
+    font-family: Comic Sans MS, sans-serif;
+}
+
+h1 {
+    font-family: Comic Sans MS, sans-serif;
+    font-size: 50pt;
+}
+
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.line-highlight {
+    background-image: linear-gradient(to right, rgba(249, 60, 31, 0.2) 70%, rgba(255, 122, 102, 0)) !important;
+    cursor: pointer !important;
+}
