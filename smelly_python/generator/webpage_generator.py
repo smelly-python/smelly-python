@@ -26,16 +26,11 @@ def _create_code_page(file):
 
     with doc.head:
         link(rel='stylesheet', href='style.css')
-        link(rel='stylesheet', href='prism.css')
-        link(rel='stylesheet',
-             href='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/line-highlight/'
-                  'prism-line-highlight.min.css')
-        link(rel='stylesheet',
-             href='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/line-numbers/'
-                  'prism-line-numbers.min.css')
+        link(rel='stylesheet', href='idea.min.css')
+
     with doc:
         h1('Smelly Python')
-        with div(_class='line-numbers', id=file[0].location.path):
+        with div(id=file[0].location.path):
             # Count number of nested folders by counting /
             link_to_home = '/'.join('..' for _ in range(file[0].location.path.count('/'))) + '/'
             h4(a('Home', href=link_to_home), f' > {file[0].location.path}')
@@ -54,14 +49,9 @@ def _create_code_page(file):
                     code(code_file.read(), _class='language-python')
 
         with footer():
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js')
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/'
-                       'autoloader/prism-autoloader.min.js')
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/'
-                       'line-highlight/prism-line-highlight.min.js')
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/'
-                       'line-numbers/prism-line-numbers.min.js')
-            script(src='script.js')
+            script(src='highlight.min.js')
+            script(src='highlightjs-line-numbers.min.js')
+            script('hljs.highlightAll();hljs.initLineNumbersOnLoad();')
 
     return doc
 
@@ -97,7 +87,7 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
         h1('Smelly Python')
         h4(f'Your project scored {report.grade}/10')
         with div():
-            with table():
+            with table(_class='smells_table'):
                 with thead():
                     row = tr()
                     row += th('Severity')
