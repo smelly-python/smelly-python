@@ -4,6 +4,8 @@ style errors.
 """
 from os import path
 
+from smelly_python.generator.webpage_generator import get_html_path
+
 
 def get_block(string):
     """
@@ -56,7 +58,7 @@ def generate_md(report, output_path='report/smelly_python'):
     result = ''
 
     # title
-    result += get_block('# Smelly Python: ' + str(report.grade))
+    result += get_block(f'# Smelly Python: {report.grade}/10')
 
     # summary
     result += get_block(
@@ -69,7 +71,7 @@ def generate_md(report, output_path='report/smelly_python'):
     headers = ['', 'File', 'Lines', 'Smell']
     data = [[
         smell.type.value,
-        get_link(smell.location.path, path.join(output_path, smell.location.path)),
+        get_link(smell.location.path, path.join(output_path, get_html_path(smell.location.path))),
         str(smell.location.line) + (
             ':' + str(smell.location.column) if smell.location.column != 0 else ''
         ),
