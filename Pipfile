@@ -14,3 +14,6 @@ pylint = "~=2.14.1"
 
 [scripts]
 pylint="pylint smelly_python"
+
+[packages]
+click = "*"
