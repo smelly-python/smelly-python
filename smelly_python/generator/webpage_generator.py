@@ -81,7 +81,7 @@ def generate_webpage(code_smells, output_path='output'):
             with table():
                 with thead():
                     row = tr()
-                    row += th('File')
+                    row += th('Severity')
                     row += th('Code smell')
                     row += th('Message')
                     row += th('Location')
@@ -92,14 +92,16 @@ def generate_webpage(code_smells, output_path='output'):
                         with tr(style='font-weight:bold'):
                             with td(colspan=4):
                                 a(file[0].location.path, href=html_path)
-                        for smell in file:
+                        for smell in sorted(file, key=lambda s: s.severity(), reverse=True):
                             row = tr(_class='center-text')
                             table_data = td()
                             if smell.type == 'error':
-                                table_data.add(
-                                    image(src='error.svg', alt='error'))
-                            else:
+                                table_data.add(image(src='error.svg', alt='error'))
+                            elif smell.type == 'warning':
                                 table_data.add(image(src='warning.svg', alt='warning'))
+                            else:
+                                # Will be "refactor" or "convention"
+                                table_data.add(image(src='info.svg', alt='info'))
 
                             row += table_data
                             row += td(smell.symbol)

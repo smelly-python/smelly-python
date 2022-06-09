@@ -44,6 +44,20 @@ class CodeSmell:
     def __str__(self) -> str:
         return f'{self.type} {self.location} with reason: {self.message}'
 
+    def severity(self) -> int:
+        """
+        Gives the severity depending on the type of the code smell.
+        Unknown types are automatically -1 severity.
+        From high to low the severities are:
+        - Error
+        - Warning
+        - Refactor
+        - Convention
+        :return: the severity of the code smell
+        """
+        types = ['convention', 'refactor', 'warning', 'error']
+        return types.index(self.type) if self.type in types else -1
+
     @staticmethod
     def convert_dict(json_content) -> Array:
         """
