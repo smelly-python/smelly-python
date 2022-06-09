@@ -13,7 +13,6 @@ from dominate.tags import \
     h1, div, tbody, table, tr, td, thead, th, \
     a, footer, script, pre, code, link, h4
 from dominate.util import raw
-from smelly_python.code_smell import CodeSmell
 
 
 def _create_output(output_dir):
@@ -37,7 +36,9 @@ def _create_code_page(file):
     with doc:
         h1('Smelly Python')
         with div(_class='line-numbers', id=file[0].location.path):
-            h4(a('Home', href='./index.html'), f' > {file[0].location.path}')
+            # Count number of nested folders by counting /
+            link_to_home = '/'.join('..' for _ in range(file[0].location.path.count('/'))) + '/'
+            h4(a('Home', href=link_to_home), f' > {file[0].location.path}')
 
             data_line = ""
             for smell in file:
@@ -65,7 +66,16 @@ def _create_code_page(file):
     return doc
 
 
-def generate_webpage(code_smells, output_path='report/smelly_python', grade=None):
+def get_html_path(file):
+    """
+    Gets the html path of a file.
+    :param: file the path to the file
+    :return: the html path to the file
+    """
+    return Path(file).with_suffix('.html')
+
+
+def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
     """
     Generates the webpage showing the errors as a string.
     :return: the html webpage as a string
@@ -77,42 +87,46 @@ def generate_webpage(code_smells, output_path='report/smelly_python', grade=None
     with doc.head:
         link(rel='stylesheet', href='style.css')
 
-    code_smell_by_file = CodeSmell.group_by_file(code_smells)
+    code_smell_by_file = report.group_by_file()
+    html_paths = {
+        file: get_html_path(file)
+        for file in [file[0].location.path for file in code_smell_by_file]
+    }
+
     with doc:
         h1('Smelly Python')
-        h4(f'Your project scored {grade}/10')
+        h4(f'Your project scored {report.grade}/10')
         with div():
             with table():
                 with thead():
                     row = tr()
                     row += th('Severity')
+                    row += th('File')
                     row += th('Code smell')
                     row += th('Message')
                     row += th('Location')
                 with tbody():
-                    for file in code_smell_by_file:
-                        full_file_path = path.join(getcwd(), file[0].location.path)
-                        html_path = Path(path.basename(full_file_path)).with_suffix('.html')
-                        with tr(style='font-weight:bold'):
-                            with td(colspan=4):
-                                a(file[0].location.path, href=html_path)
-                        for smell in sorted(file, key=lambda s: s.severity(), reverse=True):
-                            row = tr(_class='center-text')
-                            table_data = td()
-                            if smell.type == 'error':
-                                table_data.add(image(src='error.svg', alt='error'))
-                            elif smell.type == 'warning':
-                                table_data.add(image(src='warning.svg', alt='warning'))
-                            else:
-                                # Will be "refactor" or "convention"
-                                table_data.add(image(src='info.svg', alt='info'))
+                    for smell in report.code_smells:
+                        file = smell.location.path
+                        html_path = html_paths[file]
 
-                            row += table_data
-                            row += td(smell.symbol)
-                            row += td(smell.message)
-                            code_smell_link = f'{html_path}#code-block.{smell.location.line}'
-                            row += td(a(f'{smell.location.line}:{smell.location.column}',
-                                        href=code_smell_link))
+                        row = tr(_class='center-text')
+                        table_data = td()
+                        if smell.type == 'error':
+                            table_data.add(image(src='error.svg', alt='error'))
+                        elif smell.type == 'warning':
+                            table_data.add(image(src='warning.svg', alt='warning'))
+                        else:
+                            # Will be "refactor" or "convention"
+                            table_data.add(image(src='info.svg', alt='info'))
+
+                        row += table_data
+                        row += td(a(file, href=html_path))
+                        row += td(smell.symbol)
+                        row += td(smell.message)
+                        code_smell_link = f'{html_path}#code-block.{smell.location.line}'
+                        row += td(a(f'{smell.location.line}:{smell.location.column}',
+                                    href=code_smell_link))
 
         with footer():
             raw('<strong>Icons by svgrepo.com</strong>')
@@ -120,7 +134,11 @@ def generate_webpage(code_smells, output_path='report/smelly_python', grade=None
 
     for file in code_smell_by_file:
         file_page = _create_code_page(file)
-        html_path = Path(path.join(output_path, path.basename(file[0].location.path)))\
+
+        directory = path.dirname(path.join(output_path, file[0].location.path))
+        os.makedirs(directory, exist_ok=True)
+
+        html_path = Path(path.join(output_path, file[0].location.path))\
             .with_suffix('.html')
         with open(html_path, 'w', encoding='utf-8') as html_file:
             html_file.write(str(file_page))
