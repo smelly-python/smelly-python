@@ -1,6 +1,8 @@
 """
 The command line module provides the main function of the application.
 """
+# from asyncio import subprocess
+import subprocess
 import sys
 import json
 import os
@@ -20,15 +22,20 @@ def main(file, command):
     if ((file is not None) and (command is not None) or (file == command)):
         print("Please only provide either --file or --command argument")
         sys.exit(1)
-    file_name = file
+    content = ""
     if command:
         print('Running pylint...')
-        print(command + ' --output-format=json > output.json')
-        os.system(command + ' --output-format=json > output.json')
-        file_name = './output.json'
+        print([*command.split(), *['--output-format=json']])
+        try:
+            result = subprocess.run([*command.split(), *['--output-format=json', '--exit-zero']], capture_output=True, text=True, check=True)
+        except subprocess.CalledProcessError:
+            print(f'Whoops we could not run pylint with the following command: {command}')
+            sys.exit(1)
+        content = json.loads(result.stdout)
+    else:
+        with open(file, 'r', encoding='utf-8') as input_file:
+            content = json.load(input_file)
 
-    with open(file_name, 'r', encoding='utf-8') as input_file:
-        dict_data = json.load(input_file)
-        code_smells = CodeSmell.convert_dict(dict_data)
-        print(code_smells)
-        generate_webpage(code_smells)
+    code_smells = CodeSmell.convert_dict(content)
+    generate_webpage(code_smells)
+    
