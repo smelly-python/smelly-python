@@ -91,7 +91,7 @@ class CodeSmell:
         Creates a JSON object containing the CodeSmell.
         :return: a string with the JSON object
         """
-        return json.dumps(self, default=lambda o: o.__dict__)
+        return json.dumps(self, default=lambda o: { 'severity': self.severity(), **o.__dict__})
 
 
 class Report:
