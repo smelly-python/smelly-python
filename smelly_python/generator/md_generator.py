@@ -1,15 +1,36 @@
+"""
+The md generator module provides the method that generates the md comment given a list of
+style errors.
+"""
 from os import path
 
 
 def get_block(string):
+    """
+    Gets a string as an MD block.
+    :param: string the string to format
+    :return: the string as an MD block
+    """
     return string + "\n\n"
 
 
 def get_link(label, url):
+    """
+    Formats a link to MD format.
+    :param: label the label to use for the link
+    :url: the url the link should point to
+    :return: the link in MD format
+    """
     return '[' + label + '](' + url + ')'
 
 
 def get_table(headers, data):
+    """
+    Creates an MD table from headers and data.
+    :param: headers the headers of the table
+    :data: the data to go in the table
+    :return: the table in MD format
+    """
     # fix headers to use at least one character
     headers = [' ' if header == '' else header for header in headers]
 
@@ -27,6 +48,11 @@ def get_table(headers, data):
 
 
 def generate_md(report, output_path='report/smelly_python'):
+    """
+    Generate the MD file that will become the GitHub comment.
+    :param: report the object holding the data to report
+    :param: output_path the path to output to
+    """
     result = ''
 
     # title
@@ -44,7 +70,9 @@ def generate_md(report, output_path='report/smelly_python'):
     data = [[
         smell.type.value,
         get_link(smell.location.path, path.join(output_path, smell.location.path)),
-        str(smell.location.line) + (':' + str(smell.location.column) if smell.location.column != 0 else ''),
+        str(smell.location.line) + (
+            ':' + str(smell.location.column) if smell.location.column != 0 else ''
+        ),
         smell.get_readable_symbol()
     ] for smell in report.code_smells]
     result += get_block(get_table(headers, data))

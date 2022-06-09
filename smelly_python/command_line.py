@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 from os import path, getcwd
 import click
-from smelly_python.code_smell import CodeSmell, Report
+from smelly_python.code_smell import Report
 from .generator.webpage_generator import generate_webpage
 from .generator.md_generator import generate_md
 
@@ -46,7 +46,7 @@ def main(directory):
         grade = re.search(
             r"Your code has been rated at (\d+\.?\d*)", input_file.read()).group(1)
 
-    report = Report(CodeSmell.convert_dict(content), grade)
+    report = Report(content, grade)
     generate_webpage(report)
     generate_md(report)
 

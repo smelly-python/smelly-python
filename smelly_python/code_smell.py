@@ -29,6 +29,9 @@ class Location:
 
 
 class Priority(Enum):
+    """
+    The enum that represents the priorities/types of the code smells.
+    """
     ERROR = ':red_circle:'
     WARNING = ':orange_circle:'
     REFACTOR = ':yellow_circle:'
@@ -36,6 +39,11 @@ class Priority(Enum):
 
     @staticmethod
     def get_priority(name):
+        """
+        Gets the Priority enum based on the lowercase string.
+        :param: name the name of the priority to get
+        :return: the corresponding priority
+        """
         return {prio.name.lower(): prio for prio in Priority}[name]
 
 
@@ -71,7 +79,30 @@ class CodeSmell:
         return types.index(self.type) if self.type in types else -1
 
     def get_readable_symbol(self) -> str:
+        """
+        Gets the symbol as a readable string.
+        :return: a readable string
+        """
         return self.symbol.replace('-', ' ')
+
+
+class Report:
+    """
+    The Report class contains a list of code smells and a grade.
+    """
+    def __init__(self, json_content, grade):
+        self.code_smells = self.convert_dict(json_content)
+        self.grade = grade
+
+    def group_by_file(self):
+        """
+        Groups the code smells by their file.
+        :param: code_smells the CodeSmells objects
+        :return: a list with lists of CodeSmells.
+        """
+        def key_func(k):
+            return k.location.path
+        return [list(value) for _, value in groupby(self.code_smells, key_func)]
 
     @staticmethod
     def convert_dict(json_content) -> Array:
@@ -83,24 +114,4 @@ class CodeSmell:
         ret = []
         for i in json_content:
             ret.append(CodeSmell(i))
-        return ret
-
-    @staticmethod
-    def group_by_file(code_smells):
-        """
-        Takes a list of code smells and groups them by the file.
-        :param: code_smells the CodeSmells objects
-        :return: a list with lists of CodeSmells.
-        """
-        def key_func(k):
-            return k.location.path
-        return [list(value) for _, value in groupby(code_smells, key_func)]
-
-
-class Report:
-    """
-    The Report class contains a list of code smells and a grade.
-    """
-    def __init__(self, code_smells, grade):
-        self.code_smells = sorted(code_smells, key=lambda s: s.severity(), reverse=True)
-        self.grade = grade
+        return sorted(ret, key=lambda s: s.severity(), reverse=True)

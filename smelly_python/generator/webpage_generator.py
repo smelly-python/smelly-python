@@ -13,7 +13,6 @@ from dominate.tags import \
     h1, div, tbody, table, tr, td, thead, th, \
     a, footer, script, pre, code, link, h4
 from dominate.util import raw
-from smelly_python.code_smell import CodeSmell
 
 
 def _create_output(output_dir):
@@ -66,6 +65,11 @@ def _create_code_page(file):
 
 
 def get_html_path(file):
+    """
+    Gets the html path of a file.
+    :param: file the path to the file
+    :return: the html path to the file
+    """
     return Path(file).with_suffix('.html')
 
 
@@ -81,9 +85,9 @@ def generate_webpage(report, output_path='report/smelly_python'):
     with doc.head:
         link(rel='stylesheet', href='style.css')
 
-    code_smell_by_file = CodeSmell.group_by_file(report.code_smells)
+    code_smell_by_file = report.group_by_file()
     html_paths = {
-        file: get_html_path(file, output_path)
+        file: get_html_path(file)
         for file in [file[0].location.path for file in code_smell_by_file]
     }
 
