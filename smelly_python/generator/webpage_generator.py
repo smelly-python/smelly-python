@@ -37,15 +37,7 @@ def _create_code_page(file: [CodeSmell]):
             link_to_home = '/'.join('..' for _ in range(file[0].location.path.count('/'))) + '/'
             h4(a('Home', href=link_to_home), f' > {file[0].location.path}')
 
-            data_line = ""
-            for smell in file:
-                loc = smell.location
-                if loc.line == loc.end_line and loc.end_line is not None:
-                    data_line += f',{loc.line}'
-                else:
-                    data_line += f', {loc.line}-{loc.end_line}'
-
-            with pre(id='code-block', _class='language-python', data_line=data_line):
+            with pre(id='code-block'):
                 full_file_path = path.join(getcwd(), file[0].location.path)
                 with open(full_file_path, 'r', encoding='utf-8') as code_file:
                     code(code_file.read(), _class='language-python')
@@ -118,7 +110,8 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
                         row += td(a(file, href=html_path))
                         row += td(smell.symbol)
                         row += td(smell.message)
-                        code_smell_link = f'{html_path}#code-block.{smell.location.line}'
+                        line_num = smell.location.line
+                        code_smell_link = f'{html_path}#line-{str(line_num - 3 if line_num > 3 else line_num)}'
                         row += td(a(f'{smell.location.line}:{smell.location.column}',
                                     href=code_smell_link))
 

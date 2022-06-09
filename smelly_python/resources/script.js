@@ -23,6 +23,7 @@ window.onload = async function () {
         const line = index + 1;
         if (line in smellsPerLine) {
             // TODO: handle multiple smells on one line
+            // TODO: handle smells on multiple lines
             const smell = smellsPerLine[line];
             tr.classList.add(smell.type);
             tr.classList.add('code-smell');
@@ -32,8 +33,11 @@ window.onload = async function () {
             message.innerText = smell.message;
             tr.appendChild(message);
             message.style.setProperty('margin-left', -message.clientWidth / 2 + 'px');
-            console.log(message)
         }
         tr.setAttribute('id', `line-${line}`);
+    }
+    // Scroll to line number if necessary
+    if (window.location.hash !== '') {
+        window.scrollTo({ top: document.querySelector(window.location.hash).offsetTop});
     }
 }
