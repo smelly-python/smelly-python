@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Generate markdown file with the content for a comment on PRs
 - Highlight lines of code with color depending on the type of code smell
 - Show tooltip on lines with code smells that show the message of the code smell
+- Display a message when no code smells were found
 
 ## [v0.0.0] 2 June 2022
 - Setup the repository

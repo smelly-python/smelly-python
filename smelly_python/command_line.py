@@ -14,13 +14,13 @@ from .generator.webpage_generator import generate_webpage
 from .generator.md_generator import generate_md
 
 
-def get_grade(text):
+def get_grade(text: str) -> str:
     """
     Extracts the grade from the text exported by pylint.
     :param: text the exported text
     :return: the grade with one decimal place
     """
-    search = re.search(r"Your code has been rated at (\d+)\.?(\d*)", text)
+    search = re.search(r'Your code has been rated at (\d+)\.?(\d*)', text)
 
     if search.group(2).lstrip('0') == '':
         return search.group(1)
