@@ -14,7 +14,7 @@ from dominate.tags import \
     a, footer, script, pre, code, link, h4
 from dominate.util import raw
 
-from smelly_python.code_smell import CodeSmell
+from smelly_python.code_smell import CodeSmell, Priority
 
 
 def _create_output(output_dir):
@@ -110,9 +110,9 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
 
                         row = tr(_class='center-text')
                         table_data = td()
-                        if smell.type == 'error':
+                        if smell.type == Priority.ERROR:
                             table_data.add(image(src='error.svg', alt='error'))
-                        elif smell.type == 'warning':
+                        elif smell.type == Priority.WARNING:
                             table_data.add(image(src='warning.svg', alt='warning'))
                         else:
                             # Will be "refactor" or "convention"

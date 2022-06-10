@@ -130,6 +130,6 @@ class Report:
         :return: Array of CodeSmells
         """
         ret = []
-        for i in json_content:
-            ret.append(CodeSmell(i))
+        for smell in json_content:
+            ret.append(CodeSmell(smell))
         return sorted(ret, key=lambda s: s.severity(), reverse=True)
