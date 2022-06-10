@@ -42,7 +42,7 @@ def main(directory):
         content = json.load(input_file)
     with open(_get_reports('grade.txt'), 'r', encoding='utf-8') as input_file:
         grade = re.search(
-            r"Your code has been rated at (\d+\.?\d*)", input_file.read()).group(1)
+            r'Your code has been rated at (\d+\.?\d*)', input_file.read()).group(1)
 
     report = Report(content, grade)
     generate_webpage(report)
@@ -55,3 +55,7 @@ def _setup_dirs():
 
 def _get_reports(file_name):
     return path.join(getcwd(), 'report/smelly_python', file_name)
+
+
+if __name__ == '__main__':
+    main(None)

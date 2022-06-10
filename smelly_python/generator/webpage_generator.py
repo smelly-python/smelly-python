@@ -26,15 +26,16 @@ def _create_output(output_dir):
 def _generate_code_document(file: [CodeSmell]):
     doc = document(title='Smelly Python code smell report')
 
+    # Count number of nested folders by counting /
+    link_to_home = '/'.join('..' for _ in range(file[0].location.path.count('/'))) + '/'
+
     with doc.head:
-        link(rel='stylesheet', href='style.css')
-        link(rel='stylesheet', href='idea.min.css')
+        link(rel='stylesheet', href=f'{link_to_home}/style.css')
+        link(rel='stylesheet', href=f'{link_to_home}/idea.min.css')
 
     with doc:
         h1('Smelly Python')
         with div(id=file[0].location.path):
-            # Count number of nested folders by counting /
-            link_to_home = '/'.join('..' for _ in range(file[0].location.path.count('/'))) + '/'
             h4(a('Home', href=link_to_home), f' > {file[0].location.path}')
 
             with pre(id='code-block'):
@@ -43,10 +44,10 @@ def _generate_code_document(file: [CodeSmell]):
                     code(code_file.read(), _class='language-python')
 
         with footer():
-            script(src='highlight.min.js')
-            script(src='highlightjs-line-numbers.min.js')
+            script(src=f'{link_to_home}/highlight.min.js')
+            script(src=f'{link_to_home}/highlightjs-line-numbers.min.js')
             script('hljs.highlightAll();')
-            script(src='script.js')
+            script(src=f'{link_to_home}/script.js')
             script(raw(f'setSmells([{",".join(smell.jsonify() for smell in file)}])'))
 
     return doc
