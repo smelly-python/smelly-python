@@ -11,7 +11,7 @@ from dominate import document
 from dominate.svg import image
 from dominate.tags import \
     h1, div, tbody, table, tr, td, thead, th, \
-    a, footer, script, pre, code, link, h4
+    a, footer, script, pre, code, link, h4, p
 from dominate.util import raw
 
 from smelly_python.code_smell import CodeSmell, Priority
@@ -95,41 +95,48 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
     with doc:
         h1('Smelly Python')
         h4(f'Your project scored {report.grade}/10')
-        with div():
-            with table(_class='smells_table'):
-                with thead():
-                    row = tr()
-                    row += th('Severity')
-                    row += th('File')
-                    row += th('Code smell')
-                    row += th('Message')
-                    row += th('Location')
-                with tbody():
-                    for smell in report.code_smells:
-                        html_path = html_paths[smell.location.path]
+        if report.is_clean():
+            p('There were no code smells found. Good job!')
+            # raw('There were no code smells found! <strong>Good job!</strong>')
 
-                        row = tr(_class='center-text')
-                        table_data = td()
-                        if smell.type == Priority.ERROR:
-                            table_data.add(image(src='error.svg', alt='error'))
-                        elif smell.type == Priority.WARNING:
-                            table_data.add(image(src='warning.svg', alt='warning'))
-                        else:
-                            # Will be "refactor" or "convention"
-                            table_data.add(image(src='info.svg', alt='info'))
+        else:
+            with div():
+                with table(_class='smells_table'):
+                    with thead():
+                        row = tr()
+                        row += th('Severity')
+                        row += th('File')
+                        row += th('Code smell')
+                        row += th('Message')
+                        row += th('Location')
+                    with tbody():
+                        for smell in report.code_smells:
+                            html_path = html_paths[smell.location.path]
 
-                        row += table_data
-                        row += td(a(smell.location.path, href=html_path))
-                        row += td(smell.symbol)
-                        row += td(smell.message)
-                        line_num = smell.location.line
-                        code_smell_link = f'{html_path}#line-' \
-                                          f'{str(line_num - 3 if line_num > 3 else line_num)}'
-                        row += td(a(f'{smell.location.line}:{smell.location.column}',
-                                    href=code_smell_link))
+                            row = tr(_class='center-text')
+                            table_data = td()
+                            if smell.type == Priority.ERROR:
+                                table_data.add(image(src='error.svg', alt='error'))
+                            elif smell.type == Priority.WARNING:
+                                table_data.add(image(src='warning.svg', alt='warning'))
+                            else:
+                                # Will be "refactor" or "convention"
+                                table_data.add(image(src='info.svg', alt='info'))
+
+                            row += table_data
+                            row += td(a(smell.location.path, href=html_path))
+                            row += td(smell.symbol)
+                            row += td(smell.message)
+                            line_num = smell.location.line
+                            code_smell_link = f'{html_path}#line-' \
+                                              f'{str(line_num - 3 if line_num > 3 else line_num)}'
+                            row += td(a(f'{smell.location.line}:{smell.location.column}',
+                                        href=code_smell_link))
 
         with footer():
-            raw('<strong>Icons by svgrepo.com</strong>')
+            if not report.is_clean():
+                raw('<strong>Icons by svgrepo.com</strong>')
+            script(src='script.js')
 
     for file in code_smell_by_file:
         _create_code_page(file, output_path)

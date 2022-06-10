@@ -37,7 +37,7 @@ class Priority(Enum):
     ERROR = ':red_circle:'
     WARNING = ':orange_circle:'
     REFACTOR = ':yellow_circle:'
-    CONVENTION = ':blue_circle:'
+    CONVENTION = ':large_blue_circle:'
 
     @staticmethod
     def get_priority(name):
@@ -109,6 +109,13 @@ class Report:
     def __init__(self, json_content, grade):
         self.code_smells = self.convert_dict(json_content)
         self.grade = grade
+
+    def is_clean(self):
+        """
+        Checks whether the report is "clean", i.e. that there are no code smells.
+        :return: true if the report is clean
+        """
+        return len(self.code_smells) == 0
 
     def group_by_file(self):
         """
