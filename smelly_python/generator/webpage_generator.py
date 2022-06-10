@@ -134,7 +134,9 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
                                         href=code_smell_link))
 
         with footer():
-            raw('<strong>Icons by svgrepo.com</strong>')
+            if not report.is_clean():
+                raw('<strong>Icons by svgrepo.com</strong>')
+            script(src='script.js')
 
     for file in code_smell_by_file:
         _create_code_page(file, output_path)
