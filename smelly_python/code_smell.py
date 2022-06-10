@@ -37,7 +37,7 @@ class Priority(Enum):
     ERROR = ':red_circle:'
     WARNING = ':orange_circle:'
     REFACTOR = ':yellow_circle:'
-    CONVENTION = ':blue_circle:'
+    CONVENTION = ':large_blue_circle:'
 
     @staticmethod
     def get_priority(name):
