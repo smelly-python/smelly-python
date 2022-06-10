@@ -49,6 +49,19 @@ def get_table(headers, data):
     return table
 
 
+def get_code_smell_number_string(number):
+    """
+    Returns the number of code smells as a grammatically correct string.
+    :param: number the number of code smells
+    :return: the number of code smells as a correct string
+    """
+    if number < 1:
+        return 'no code smells'
+    if number == 1:
+        return '1 code smell'
+    return str(number) + ' code smells'
+
+
 def generate_md(report, output_path='report/smelly_python'):
     """
     Generate the MD file that will become the GitHub comment.
@@ -62,22 +75,37 @@ def generate_md(report, output_path='report/smelly_python'):
 
     # summary
     result += get_block(
-        '> Smelly Python has found '
-        + get_link(str(len(report.code_smells)) + ' code smells', 'smelly_python/index.html')
+        '> Smelly Python found '
+        + get_link(
+            get_code_smell_number_string(len(report.code_smells)),
+            'smelly_python/index.html'
+        )
         + ' in your project.'
     )
 
-    # table
-    headers = ['', 'File', 'Lines', 'Smell']
-    data = [[
-        smell.type.value,
-        get_link(smell.location.path, path.join(output_path, get_html_path(smell.location.path))),
-        str(smell.location.line) + (
-            ':' + str(smell.location.column) if smell.location.column != 0 else ''
-        ),
-        smell.get_readable_symbol()
-    ] for smell in report.code_smells]
-    result += get_block(get_table(headers, data))
+    if report.is_clean():
+        # congratulations
+        result += get_block('Good job! :partying_face:')
+
+    else:
+        # table
+        headers = ['', 'File', 'Lines', 'Smell']
+        data = [[
+            # emoji matching the priority
+            smell.type.value,
+            # link to the relevant file
+            get_link(
+                smell.location.path,
+                path.join(output_path, get_html_path(smell.location.path))
+            ),
+            # location in the file
+            str(smell.location.line) + (
+                ':' + str(smell.location.column) if smell.location.column != 0 else ''
+            ),
+            # the symbol converted to a readable string
+            smell.get_readable_symbol()
+        ] for smell in report.code_smells]
+        result += get_block(get_table(headers, data))
 
     # export
     with open(path.join(output_path, 'comment.md'), 'w', encoding='utf-8') as index:

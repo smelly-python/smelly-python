@@ -110,6 +110,13 @@ class Report:
         self.code_smells = self.convert_dict(json_content)
         self.grade = grade
 
+    def is_clean(self):
+        """
+        Checks whether the report is "clean", i.e. that there are no code smells.
+        :return: true if the report is clean
+        """
+        return len(self.code_smells) == 0
+
     def group_by_file(self):
         """
         Groups the code smells by their file.
