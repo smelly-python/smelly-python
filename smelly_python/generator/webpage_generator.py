@@ -14,6 +14,8 @@ from dominate.tags import \
     a, footer, script, pre, code, link, h4
 from dominate.util import raw
 
+from smelly_python.code_smell import CodeSmell, Priority
+
 
 def _create_output(output_dir):
     if path.exists(output_dir):
@@ -21,47 +23,32 @@ def _create_output(output_dir):
     os.mkdir(output_dir)
 
 
-def _create_code_page(file):
+def _generate_code_document(file: [CodeSmell]):
     doc = document(title='Smelly Python code smell report')
 
+    # Count number of nested folders by counting /
+    link_to_home = '/'.join('..' for _ in range(file[0].location.path.count('/'))) + '/'
+
     with doc.head:
-        link(rel='stylesheet', href='style.css')
-        link(rel='stylesheet', href='prism.css')
-        link(rel='stylesheet',
-             href='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/line-highlight/'
-                  'prism-line-highlight.min.css')
-        link(rel='stylesheet',
-             href='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/line-numbers/'
-                  'prism-line-numbers.min.css')
+        link(rel='stylesheet', href=f'{link_to_home}/style.css')
+        link(rel='stylesheet', href=f'{link_to_home}/idea.min.css')
+
     with doc:
         h1('Smelly Python')
-        with div(_class='line-numbers', id=file[0].location.path):
-            # Count number of nested folders by counting /
-            link_to_home = '/'.join('..' for _ in range(file[0].location.path.count('/'))) + '/'
+        with div(id=file[0].location.path):
             h4(a('Home', href=link_to_home), f' > {file[0].location.path}')
 
-            data_line = ""
-            for smell in file:
-                loc = smell.location
-                if loc.line == loc.end_line and loc.end_line is not None:
-                    data_line += f',{loc.line}'
-                else:
-                    data_line += f', {loc.line}-{loc.end_line}'
-
-            with pre(id='code-block', _class='language-python', data_line=data_line):
+            with pre(id='code-block'):
                 full_file_path = path.join(getcwd(), file[0].location.path)
                 with open(full_file_path, 'r', encoding='utf-8') as code_file:
                     code(code_file.read(), _class='language-python')
 
         with footer():
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js')
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/'
-                       'autoloader/prism-autoloader.min.js')
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/'
-                       'line-highlight/prism-line-highlight.min.js')
-            script(src='https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/'
-                       'line-numbers/prism-line-numbers.min.js')
-            script(src='script.js')
+            script(src=f'{link_to_home}/highlight.min.js')
+            script(src=f'{link_to_home}/highlightjs-line-numbers.min.js')
+            script('hljs.highlightAll();')
+            script(src=f'{link_to_home}/script.js')
+            script(raw(f'setSmells([{",".join(smell.jsonify() for smell in file)}])'))
 
     return doc
 
@@ -73,6 +60,18 @@ def get_html_path(file):
     :return: the html path to the file
     """
     return Path(file).with_suffix('.html')
+
+
+def _create_code_page(file, output_path):
+    file_page = _generate_code_document(file)
+
+    directory = path.dirname(path.join(output_path, file[0].location.path))
+    os.makedirs(directory, exist_ok=True)
+
+    html_path = Path(path.join(output_path, file[0].location.path)) \
+        .with_suffix('.html')
+    with open(html_path, 'w', encoding='utf-8') as html_file:
+        html_file.write(str(file_page))
 
 
 def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
@@ -97,7 +96,7 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
         h1('Smelly Python')
         h4(f'Your project scored {report.grade}/10')
         with div():
-            with table():
+            with table(_class='smells_table'):
                 with thead():
                     row = tr()
                     row += th('Severity')
@@ -107,41 +106,33 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
                     row += th('Location')
                 with tbody():
                     for smell in report.code_smells:
-                        file = smell.location.path
-                        html_path = html_paths[file]
+                        html_path = html_paths[smell.location.path]
 
                         row = tr(_class='center-text')
                         table_data = td()
-                        if smell.type == 'error':
+                        if smell.type == Priority.ERROR:
                             table_data.add(image(src='error.svg', alt='error'))
-                        elif smell.type == 'warning':
+                        elif smell.type == Priority.WARNING:
                             table_data.add(image(src='warning.svg', alt='warning'))
                         else:
                             # Will be "refactor" or "convention"
                             table_data.add(image(src='info.svg', alt='info'))
 
                         row += table_data
-                        row += td(a(file, href=html_path))
+                        row += td(a(smell.location.path, href=html_path))
                         row += td(smell.symbol)
                         row += td(smell.message)
-                        code_smell_link = f'{html_path}#code-block.{smell.location.line}'
+                        line_num = smell.location.line
+                        code_smell_link = f'{html_path}#line-' \
+                                          f'{str(line_num - 3 if line_num > 3 else line_num)}'
                         row += td(a(f'{smell.location.line}:{smell.location.column}',
                                     href=code_smell_link))
 
         with footer():
             raw('<strong>Icons by svgrepo.com</strong>')
-            script(src='script.js')
 
     for file in code_smell_by_file:
-        file_page = _create_code_page(file)
-
-        directory = path.dirname(path.join(output_path, file[0].location.path))
-        os.makedirs(directory, exist_ok=True)
-
-        html_path = Path(path.join(output_path, file[0].location.path))\
-            .with_suffix('.html')
-        with open(html_path, 'w', encoding='utf-8') as html_file:
-            html_file.write(str(file_page))
+        _create_code_page(file, output_path)
 
     # Copy static resources
     for file in Path(path.join(path.dirname(path.dirname(__file__)), 'resources')).glob('*'):

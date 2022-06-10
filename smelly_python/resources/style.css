@@ -7,8 +7,7 @@ h1 {
     font-size: 50pt;
 }
 
-
-table, th, td {
+.smells_table, .smells_table th, .smells_table td {
     border: 1px solid black;
     border-collapse: collapse;
 }
@@ -17,7 +16,75 @@ table, th, td {
     text-align: center;
 }
 
-.line-highlight {
-    background-image: linear-gradient(to right, rgba(249, 60, 31, 0.2) 70%, rgba(255, 122, 102, 0)) !important;
-    cursor: pointer !important;
+.error {
+    background-color: rgba(249, 31, 31, 0.4);
+}
+
+.warning {
+    background-color: rgba(249, 147, 31, 0.4);
+}
+
+.refactor {
+    background-color: rgba(249, 220, 31, 0.3);
+}
+
+.convention{
+    background-color: rgba(31, 151, 249, 0.15);
+}
+
+.code-smell {
+    cursor: pointer;
+    position: relative;
+}
+
+.code-smell .code-smell-message {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.code-smell .code-smell-message::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.code-smell:hover .code-smell-message {
+  visibility: visible;
+}
+
+/* Highlight js numbers */
+/* for block of numbers */
+.hljs-ln-numbers {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    text-align: center;
+    color: #ccc;
+    border-right: 1px solid #CCC;
+    vertical-align: top;
+    padding-right: 5px !important;
+}
+
+/* for block of code */
+.hljs-ln-code {
+    padding-left: 10px !important;
 }

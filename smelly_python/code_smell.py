@@ -5,6 +5,7 @@ and the Location class, which is used by the CodeSmell.
 from multiprocessing.dummy import Array
 from enum import Enum
 from itertools import groupby
+import json
 
 
 class Location:
@@ -13,6 +14,7 @@ class Location:
     This includes the module, object, line and column numbers of the code smell
     in the file that the path points to.
     """
+
     def __init__(self, data):
         self.module = data['module']
         self.python_object = data['obj']
@@ -51,6 +53,7 @@ class CodeSmell:
     """
     The CodeSmell class contains all the fields of the JSON objects that pylint generates.
     """
+
     def __init__(self, data):
         self.type = Priority.get_priority(data['type'])
         self.location = Location(data)
@@ -85,11 +88,24 @@ class CodeSmell:
         """
         return self.symbol.replace('-', ' ')
 
+    def jsonify(self) -> str:
+        """
+        Creates a JSON object containing the CodeSmell.
+        :return: a string with the JSON object
+        """
+        return json.dumps(self,
+                          default=lambda o: {
+                              **o.__dict__,
+                              'severity': self.severity(),
+                              'type': self.type.name.lower()
+                          })
+
 
 class Report:
     """
     The Report class contains a list of code smells and a grade.
     """
+
     def __init__(self, json_content, grade):
         self.code_smells = self.convert_dict(json_content)
         self.grade = grade
@@ -100,8 +116,10 @@ class Report:
         :param: code_smells the CodeSmells objects
         :return: a list with lists of CodeSmells.
         """
+
         def key_func(k):
             return k.location.path
+
         return [list(value) for _, value in groupby(self.code_smells, key_func)]
 
     @staticmethod
@@ -112,6 +130,6 @@ class Report:
         :return: Array of CodeSmells
         """
         ret = []
-        for i in json_content:
-            ret.append(CodeSmell(i))
+        for smell in json_content:
+            ret.append(CodeSmell(smell))
         return sorted(ret, key=lambda s: s.severity(), reverse=True)

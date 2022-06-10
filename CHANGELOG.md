@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 - Link code smell location to highlighted location in the code
 - Add program arguments for directory that pylint should analyse
 - Generate markdown file with the content for a comment on PRs
+- Highlight lines of code with color depending on the type of code smell
+- Show tooltip on lines with code smells that show the message of the code smell
 
 ## [v0.0.0] 2 June 2022
 - Setup the repository
