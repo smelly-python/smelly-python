@@ -10,6 +10,12 @@ h1 {
 .smells_table, .smells_table th, .smells_table td {
     border: 1px solid black;
     border-collapse: collapse;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.smells_table .explanation {
+    text-align: left;
 }
 
 .center-text {
@@ -28,7 +34,7 @@ h1 {
     background-color: rgba(249, 220, 31, 0.3);
 }
 
-.convention{
+.convention {
     background-color: rgba(31, 151, 249, 0.15);
 }
 

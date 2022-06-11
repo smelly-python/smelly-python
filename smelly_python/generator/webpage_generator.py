@@ -14,7 +14,8 @@ from dominate.tags import \
     a, footer, script, pre, code, link, h4, p
 from dominate.util import raw
 
-from smelly_python.code_smell import CodeSmell, Priority
+from smelly_python.code_smell import CodeSmell, Priority, Report
+from smelly_python.generator.pylint_explanation_fetcher import ExplanationFetcher
 
 
 def _create_output(output_dir):
@@ -74,7 +75,8 @@ def _create_code_page(file, output_path):
         html_file.write(str(file_page))
 
 
-def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
+def generate_webpage(report: Report, explanations = ExplanationFetcher,
+                     output_path=path.join('report', 'smelly_python')):
     """
     Generates the webpage showing the errors as a string.
     :return: the html webpage as a string
@@ -132,6 +134,8 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
                                               f'{str(line_num - 3 if line_num > 3 else line_num)}'
                             row += td(a(f'{smell.location.line}:{smell.location.column}',
                                         href=code_smell_link))
+                            row += td(*explanations.get_explanation(smell.message_id).to_html(),
+                                      _class='explanation')
 
         with footer():
             if not report.is_clean():
