@@ -42,17 +42,21 @@ def main(directory):
         sys.exit(1)
     _setup_dirs()
     print('Running pylint...')
-    result = None
+    exit_code = 0
     try:
-        result = subprocess.run(['pylint', directory, f'--output-format=json:'
-        f'{_get_reports("report.json")},text:{_get_reports("grade.txt")}', '--exit-zero'],
-                                capture_output=True, text=True, check=True)
-    except subprocess.CalledProcessError:
-        print(
-            f'Whoops we could not run pylint for the following directory: {directory}')
-        print(result.stderr)
-        sys.exit(1)
-    print('Finished running python, creating report...')
+        subprocess.run(['pylint', directory, f'--output-format='
+                                             f'json:{_get_reports("report.json")},'
+                                             f'text:{_get_reports("grade.txt")}'],
+                       capture_output=True, text=True, check=True)
+    except subprocess.CalledProcessError as error:
+        # Either fatal error, or usage error
+        if error.returncode == 1 or error.returncode >= 32:
+            print(f'Whoops we could not run pylint for the following directory: {directory}')
+            with open(_get_reports('grade.txt'), 'r', encoding='utf-8') as text_report:
+                print(text_report.read())
+            sys.exit(error.returncode)
+        exit_code = error.returncode
+    print('Finished running pylint, creating report...')
     with open(_get_reports('report.json'), 'r', encoding='utf-8') as input_file:
         content = json.load(input_file)
     with open(_get_reports('grade.txt'), 'r', encoding='utf-8') as input_file:
@@ -63,7 +67,9 @@ def main(directory):
     generate_webpage(report, explanations)
     generate_md(report, explanations)
 
-    print('Success!')
+    print('Success generating the report!')
+
+    sys.exit(exit_code)
 
 
 def _setup_dirs():

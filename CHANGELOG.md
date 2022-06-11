@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - Show tooltip on lines with code smells that show the message of the code smell
 - Display a message when no code smells were found
 - Add explanation field to tables with part of pylint documentation about the code smells
+- Exit smelly python with the same exit code as pylint
 
 ## [v0.0.0] 2 June 2022
 - Setup the repository
