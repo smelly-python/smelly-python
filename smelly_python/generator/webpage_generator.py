@@ -15,6 +15,7 @@ from dominate.tags import \
 from dominate.util import raw
 
 from smelly_python.code_smell import CodeSmell, Priority
+from .pylint_explanation_fetcher import initialize, get_explanation
 
 
 def _create_output(output_dir):
@@ -92,6 +93,9 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
         for file in [file[0].location.path for file in code_smell_by_file]
     }
 
+    # Initialise explanation fetcher
+    initialize()
+
     with doc:
         h1('Smelly Python')
         h4(f'Your project scored {report.grade}/10')
@@ -132,6 +136,7 @@ def generate_webpage(report, output_path=path.join('report', 'smelly_python')):
                                               f'{str(line_num - 3 if line_num > 3 else line_num)}'
                             row += td(a(f'{smell.location.line}:{smell.location.column}',
                                         href=code_smell_link))
+                            row += td(raw(get_explanation(smell.message_id)), _class='explanation')
 
         with footer():
             if not report.is_clean():
