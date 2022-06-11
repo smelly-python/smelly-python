@@ -10,8 +10,8 @@ from pathlib import Path
 from os import path, getcwd
 import click
 from smelly_python.code_smell import Report
-from .generator.webpage_generator import generate_webpage
-from .generator.md_generator import generate_md
+from smelly_python.generator.webpage_generator import generate_webpage
+from smelly_python.generator.md_generator import generate_md
 
 
 def get_grade(text: str) -> str:
