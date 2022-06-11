@@ -16,7 +16,7 @@ class Explanation:
 
     def __init__(self, header=None, doc_url=None):
         if header is None or doc_url is None:
-            self.html = '-'
+            self.html = ['-']
             self.url = None
             return
         code = re.search(r'\(([A-Z]\d+)\)', header.text)
@@ -30,9 +30,6 @@ class Explanation:
         self.html = explanation.contents
         self.url = f'{doc_url}#{header.find_previous("section").attrs["id"]}'
 
-    def __str__(self):
-        return f'{self.code} with {self.html} from {self.url}'
-
     def to_html(self):
         """
         Converts this Explanation to a list of Dominate html elements
@@ -42,6 +39,14 @@ class Explanation:
         raw_html = [raw(tag) for tag in self.html]
         return [*raw_html, ' ', a('[source]', href=self.url, target='_blank')]\
             if self.url is not None else raw_html
+
+    def to_markdown(self):
+        """
+        Converts this Explanation to a markdown formatted string.
+        :return: markdown string
+        """
+        text = ''.join(self.html).lstrip().replace('\n', ' ')
+        return f'{text} [\\[source\\]]({self.url})' if self.url is not None else text
 
 
 class ExplanationFetcher:

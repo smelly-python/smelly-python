@@ -10,6 +10,7 @@ from pathlib import Path
 from os import path, getcwd
 import click
 from smelly_python.code_smell import Report
+from smelly_python.generator.pylint_explanation_fetcher import ExplanationFetcher
 from smelly_python.generator.webpage_generator import generate_webpage
 from smelly_python.generator.md_generator import generate_md
 
@@ -58,8 +59,9 @@ def main(directory):
         grade = get_grade(input_file.read())
 
     report = Report(content, grade)
-    generate_webpage(report)
-    generate_md(report)
+    explanations = ExplanationFetcher()
+    generate_webpage(report, explanations)
+    generate_md(report, explanations)
 
     print('Success!')
 
@@ -69,7 +71,7 @@ def _setup_dirs():
 
 
 def _get_reports(file_name):
-    return path.join(getcwd(), 'report/smelly_python', file_name)
+    return path.join(getcwd(), 'report', 'smelly_python', file_name)
 
 
 if __name__ == '__main__':
