@@ -51,9 +51,9 @@ def main(directory):
     except subprocess.CalledProcessError as error:
         # Either fatal error, or usage error
         if error.returncode == 1 or error.returncode >= 32:
-            print(
-                f'Whoops we could not run pylint for the following directory: {directory}')
-            print(error.stderr)
+            print(f'Whoops we could not run pylint for the following directory: {directory}')
+            with open(_get_reports('grade.txt'), 'r', encoding='utf-8') as text_report:
+                print(text_report.read())
             sys.exit(error.returncode)
         exit_code = error.returncode
     print('Finished running pylint, creating report...')
