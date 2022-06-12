@@ -79,6 +79,8 @@ def generate_md(report: Report, explanations: ExplanationFetcher,
     else:
         result +=\
             get_block('You can find the more detailed html report in the artifact of the action.')
+        result +=\
+            get_block('On a PR, the artifact can be found at the right top of the `Checks` tab.')
         # table
         headers = ['', 'File', 'Lines', 'Smell', 'Explanation']
         data = [[
