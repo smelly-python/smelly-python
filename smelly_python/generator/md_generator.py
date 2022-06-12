@@ -6,7 +6,6 @@ from os import path
 
 from smelly_python.code_smell import Report
 from smelly_python.generator.pylint_explanation_fetcher import ExplanationFetcher
-from smelly_python.generator.webpage_generator import get_html_path
 
 
 def get_block(string):
@@ -16,16 +15,6 @@ def get_block(string):
     :return: the string as an MD block
     """
     return f'{string}\n\n'
-
-
-def get_link(label, url):
-    """
-    Formats a link to MD format.
-    :param: label the label to use for the link
-    :url: the url the link should point to
-    :return: the link in MD format
-    """
-    return f'[{label}]({url})'
 
 
 def get_table(headers, data):
@@ -79,10 +68,7 @@ def generate_md(report: Report, explanations: ExplanationFetcher,
     # summary
     result += get_block(
         '> Smelly Python found '
-        + get_link(
-            get_code_smell_number_string(len(report.code_smells)),
-            'smelly_python/index.html'
-        )
+        + get_code_smell_number_string(len(report.code_smells))
         + ' in your project.'
     )
 
@@ -91,15 +77,18 @@ def generate_md(report: Report, explanations: ExplanationFetcher,
         result += get_block('Good job! :partying_face:')
 
     else:
+        result +=\
+            get_block('You can find the more detailed html report in the artifact of the action.')
+        result +=\
+            get_block('On a PR, the artifact can be found at the right top of the `Checks` tab.')
         # table
         headers = ['', 'File', 'Lines', 'Smell', 'Explanation']
         data = [[
             smell.type.value,
-            get_link(smell.location.path,
-                     path.join(output_path, get_html_path(smell.location.path))),
-            str(smell.location.line) + (
+            f'`{smell.location.path}`',
+            '`' + str(smell.location.line) + (
                 ':' + str(smell.location.column) if smell.location.column != 0 else ''
-            ),
+            ) + '`',
             smell.get_readable_symbol(),
             explanations.get_explanation(smell.message_id).to_markdown()
         ] for smell in report.code_smells]
