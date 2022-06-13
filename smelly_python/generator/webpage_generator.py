@@ -31,13 +31,13 @@ def _generate_code_document(file: [CodeSmell]):
     link_to_home = '/'.join('..' for _ in range(file[0].location.path.count('/'))) + '/'
 
     with doc.head:
-        link(rel='stylesheet', href=f'{link_to_home}/style.css')
-        link(rel='stylesheet', href=f'{link_to_home}/idea.min.css')
+        link(rel='stylesheet', href=f'{link_to_home}style.css')
+        link(rel='stylesheet', href=f'{link_to_home}idea.min.css')
 
     with doc:
         h1('Smelly Python')
         with div(id=file[0].location.path):
-            h4(a('Home', href=link_to_home), f' > {file[0].location.path}')
+            h4(a('Home', href=f'{link_to_home}index.html'), f' > {file[0].location.path}')
 
             with pre(id='code-block'):
                 full_file_path = path.join(getcwd(), file[0].location.path)
@@ -111,6 +111,7 @@ def generate_webpage(report: Report, explanations = ExplanationFetcher,
                         row += th('Code smell')
                         row += th('Message')
                         row += th('Location')
+                        row += th('Explanation')
                     with tbody():
                         for smell in report.code_smells:
                             html_path = html_paths[smell.location.path]
