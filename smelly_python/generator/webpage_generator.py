@@ -111,6 +111,7 @@ def generate_webpage(report: Report, explanations = ExplanationFetcher,
                         row += th('Code smell')
                         row += th('Message')
                         row += th('Location')
+                        row += th('Explanation')
                     with tbody():
                         for smell in report.code_smells:
                             html_path = html_paths[smell.location.path]
