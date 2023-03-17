@@ -45,8 +45,8 @@ def main(directory):
     try:
         subprocess.run(['pylint', directory, f'--output-format='
                                              f'json:{_get_reports("report.json")},'
-                                             f'text:{_get_reports("grade.txt")}'
-                                             '-v'],
+                                             f'text:{_get_reports("grade.txt")}',
+                                             "-v"],
                        capture_output=True, text=True, check=True)
     except subprocess.CalledProcessError as error:
         # Either fatal error, or usage error
