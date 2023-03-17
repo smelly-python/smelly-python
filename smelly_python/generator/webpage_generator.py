@@ -88,15 +88,21 @@ def generate_webpage(report: Report, explanations = ExplanationFetcher,
     with doc.head:
         link(rel='stylesheet', href='style.css')
 
+    print('test')
+
     code_smell_by_file = report.group_by_file()
     html_paths = {
         file: get_html_path(file)
         for file in [file[0].location.path for file in code_smell_by_file]
     }
 
+    print('test1')
+    print(doc)
+
     with doc:
         h1('Smelly Python')
         h4(f'Your project scored {report.grade}/10')
+        print('test2')
         if report.is_clean():
             p('There were no code smells found. Good job!')
             # raw('There were no code smells found! <strong>Good job!</strong>')
@@ -143,13 +149,13 @@ def generate_webpage(report: Report, explanations = ExplanationFetcher,
                 raw('<strong>Icons by svgrepo.com</strong>')
             script(src='script.js')
 
-    for file in code_smell_by_file:
-        _create_code_page(file, output_path)
+        for file in code_smell_by_file:
+            _create_code_page(file, output_path)
 
-    # Copy static resources
-    for file in Path(path.join(path.dirname(path.dirname(__file__)), 'resources')).glob('*'):
-        shutil.copy(file, output_path)
+        # Copy static resources
+        for file in Path(path.join(path.dirname(path.dirname(__file__)), 'resources')).glob('*'):
+            shutil.copy(file, output_path)
 
-    # Create index.html
-    with open(path.join(output_path, 'index.html'), 'w', encoding='utf-8') as index:
-        index.write(str(doc))
+        # Create index.html
+        with open(path.join(output_path, 'index.html'), 'w', encoding='utf-8') as index:
+            index.write(str(doc))
