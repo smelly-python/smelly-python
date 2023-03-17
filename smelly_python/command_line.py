@@ -42,7 +42,6 @@ def main(directory):
         sys.exit(1)
     _setup_dirs()
     print('Running pylint...')
-    exit_code = 0
     try:
         subprocess.run(['pylint', directory, f'--output-format='
                                              f'json:{_get_reports("report.json")},'
@@ -56,8 +55,9 @@ def main(directory):
                 print(text_report.read())
             sys.exit(error.returncode)
         elif error.returncode == 30:
-            print("No Space!!")
-        exit_code = error.returncode
+            with open(_get_reports('grade.txt'), 'r', encoding='utf-8') as text_report:
+                print(text_report.read())
+            print()
     print('Finished running pylint, creating report...')
     with open(_get_reports('report.json'), 'r', encoding='utf-8') as input_file:
         content = json.load(input_file)
@@ -71,7 +71,7 @@ def main(directory):
 
     print('Success generating the report!')
 
-    sys.exit(exit_code)
+    sys.exit(0)
 
 
 def _setup_dirs():
