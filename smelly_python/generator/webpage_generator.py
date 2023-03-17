@@ -88,21 +88,15 @@ def generate_webpage(report: Report, explanations = ExplanationFetcher,
     with doc.head:
         link(rel='stylesheet', href='style.css')
 
-    print('test')
-
     code_smell_by_file = report.group_by_file()
     html_paths = {
         file: get_html_path(file)
         for file in [file[0].location.path for file in code_smell_by_file]
     }
 
-    print('test1')
-    print(doc)
-
     with doc:
         h1('Smelly Python')
         h4(f'Your project scored {report.grade}/10')
-        print('test2')
         if report.is_clean():
             p('There were no code smells found. Good job!')
             # raw('There were no code smells found! <strong>Good job!</strong>')

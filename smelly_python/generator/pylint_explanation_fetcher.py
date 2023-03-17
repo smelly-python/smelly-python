@@ -44,7 +44,6 @@ class Explanation:
         Converts this Explanation to a markdown formatted string.
         :return: markdown string
         """
-        print(self.html)
         text = ""
         for x in self.html:
             if isinstance(x, str):

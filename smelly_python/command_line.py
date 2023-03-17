@@ -55,6 +55,8 @@ def main(directory):
             with open(_get_reports('grade.txt'), 'r', encoding='utf-8') as text_report:
                 print(text_report.read())
             sys.exit(error.returncode)
+        elif error.returncode == 30:
+            print("No Space!!")
         exit_code = error.returncode
     print('Finished running pylint, creating report...')
     with open(_get_reports('report.json'), 'r', encoding='utf-8') as input_file:
