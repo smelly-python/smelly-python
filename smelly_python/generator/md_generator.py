@@ -91,7 +91,7 @@ def generate_md(report: Report, explanations: ExplanationFetcher,
             ) + '`',
             smell.symbol,
             explanations.get_explanation(smell.message_id).to_markdown()
-        ] for smell in report.code_smells]
+        ] for smell in report.code_smells if smell.type.value == ":red_circle:"]
         result += get_block(get_table(headers, data))
 
     # export
