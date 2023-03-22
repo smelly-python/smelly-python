@@ -92,8 +92,21 @@ def generate_md(report: Report, explanations: ExplanationFetcher,
             smell.symbol,
             explanations.get_explanation(smell.message_id).to_markdown()
         ] for smell in report.code_smells if smell.type.value == ":red_circle:"]
+        full_data = [[
+            smell.type.value,
+            f'`{smell.location.path}`',
+            '`' + str(smell.location.line) + (
+                ':' + str(smell.location.column) if smell.location.column != 0 else ''
+            ) + '`',
+            smell.symbol,
+            explanations.get_explanation(smell.message_id).to_markdown()
+        ] for smell in report.code_smells]
+        full_report = get_block(get_table(headers, data))
         result += get_block(get_table(headers, data))
 
     # export
     with open(path.join(output_path, 'comment.md'), 'w', encoding='utf-8') as index:
         index.write(result)
+
+    with open(path.join(output_path, 'full_data.md'), 'w', encoding='utf-8') as index:
+        index.write(full_report)
