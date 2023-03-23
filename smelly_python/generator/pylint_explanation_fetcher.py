@@ -8,7 +8,6 @@ from dominate.tags import a
 from dominate.util import raw
 from requests import ConnectionError as RequestError
 
-
 class Explanation:
     """
     Object that contains the text of an explanation and the url to the documentation page.
@@ -36,7 +35,7 @@ class Explanation:
         that can be placed in the table.
         :return: list of Dominate html elements
         """
-        raw_html = [raw(tag) for tag in self.html]
+        raw_html = [raw(tag) if type(tag) == str else raw(tag.get_text()) for tag in self.html]
         return [*raw_html, ' ', a('[source]', href=self.url, target='_blank')]\
             if self.url is not None else raw_html
 
@@ -45,7 +44,10 @@ class Explanation:
         Converts this Explanation to a markdown formatted string.
         :return: markdown string
         """
-        text = ''.join(self.html).lstrip().replace('\n', ' ')
+        text = ""
+        for x in self.html:
+            if isinstance(x, str):
+                text += x.lstrip().replace("\n", " ")
         return f'{text} [\\[source\\]]({self.url})' if self.url is not None else text
 
 

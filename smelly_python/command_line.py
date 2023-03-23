@@ -42,11 +42,11 @@ def main(directory):
         sys.exit(1)
     _setup_dirs()
     print('Running pylint...')
-    exit_code = 0
     try:
         subprocess.run(['pylint', directory, f'--output-format='
                                              f'json:{_get_reports("report.json")},'
-                                             f'text:{_get_reports("grade.txt")}'],
+                                             f'text:{_get_reports("grade.txt")}',
+                                             "-v"],
                        capture_output=True, text=True, check=True)
     except subprocess.CalledProcessError as error:
         # Either fatal error, or usage error
@@ -55,7 +55,12 @@ def main(directory):
             with open(_get_reports('grade.txt'), 'r', encoding='utf-8') as text_report:
                 print(text_report.read())
             sys.exit(error.returncode)
-        exit_code = error.returncode
+        elif error.returncode == 30:
+            with open(_get_reports('grade.txt'), 'r', encoding='utf-8') as text_report:
+                print(text_report.read())
+            print(error)
+            print(error.output)
+            print(error.returncode)
     print('Finished running pylint, creating report...')
     with open(_get_reports('report.json'), 'r', encoding='utf-8') as input_file:
         content = json.load(input_file)
@@ -69,7 +74,7 @@ def main(directory):
 
     print('Success generating the report!')
 
-    sys.exit(exit_code)
+    sys.exit(0)
 
 
 def _setup_dirs():

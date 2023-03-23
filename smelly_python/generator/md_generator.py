@@ -89,10 +89,10 @@ def generate_md(report: Report, explanations: ExplanationFetcher,
             '`' + str(smell.location.line) + (
                 ':' + str(smell.location.column) if smell.location.column != 0 else ''
             ) + '`',
-            smell.get_readable_symbol(),
+            smell.symbol,
             explanations.get_explanation(smell.message_id).to_markdown()
-        ] for smell in report.code_smells]
-        result += get_block(get_table(headers, data))
+        ] for smell in report.code_smells if smell.type.value == ":red_circle:"]
+        result += get_block(get_table(headers, data)) if len(data) >= 1 else get_block("No Immediate Errors :partying_face: (There may be some warnings in the full report)")
 
     # export
     with open(path.join(output_path, 'comment.md'), 'w', encoding='utf-8') as index:
