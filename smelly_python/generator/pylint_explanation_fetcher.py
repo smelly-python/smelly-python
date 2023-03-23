@@ -35,7 +35,7 @@ class Explanation:
         that can be placed in the table.
         :return: list of Dominate html elements
         """
-        raw_html = [raw(tag) for tag in self.html]
+        raw_html = [raw(tag) if type(tag) == str else raw(tag.get_text()) for tag in self.html]
         return [*raw_html, ' ', a('[source]', href=self.url, target='_blank')]\
             if self.url is not None else raw_html
 
